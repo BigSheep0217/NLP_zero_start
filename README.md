@@ -1,2 +1,1 @@
-# NLP_zero_start
-零基础入门语言模型
+记录NLP相关学习

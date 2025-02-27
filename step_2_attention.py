@@ -15,7 +15,7 @@ class HeadAttention(nn.Module):
         # self.laten_to_dmbed = nn.Linear(laten_dim, embed_dim) 
         # 我们需要输出和输入保持一致，所以要映射回去，但不一定，要看压缩情况
     
-    def forward(self, xq, xk, xv, att_mask=None):
+    def forward(self, xq, xk, xv, attn_mask=None):
         # 输入: (batch_size, seq_len, embed_dim)
         Q = self.linearQ(xq)
         K = self.linearQ(xk)
@@ -27,8 +27,8 @@ class HeadAttention(nn.Module):
 
         # 计算注意力分数
         attn_scores = torch.matmul(Q, K.transpose(-2, -1)) * self.scale
-        if att_mask is not None: # 假设这里是上三角矩阵，用来掩盖未来信息
-            attn_scores.masked_fill_(att_mask == 1, float('-inf')) # softmax(-inf) = 0
+        if attn_mask is not None: # 假设这里是上三角矩阵，用来掩盖未来信息
+            attn_scores.masked_fill_(attn_mask == 1, float('-inf')) # softmax(-inf) = 0
         attn_probs = torch.softmax(attn_scores, dim=-1)  # 归一化得到权重
         attn_output = torch.matmul(attn_probs, V)
         # attn_output = self.laten_to_dmbed(attn_output)
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     mask = torch.triu(torch.ones(16, 16), diagonal=1)
     print(mask)
 
-    out = ha(inp, inp, inp, att_mask=mask)
+    out = ha(inp, inp, inp, attn_mask=mask)
 
     print(out)
     print(out.shape)

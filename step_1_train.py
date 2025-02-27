@@ -186,11 +186,11 @@ if __name__ == "__main__":
     ntokens = len(corpus.dictionary)
     max_len = 32
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    mode = TransformerModel(vocab_size=ntokens, embed_dim=256, num_heads=2, num_encoder_layers=2, max_len=max_len, dim_feedforward=32, dropout=0.1)
-    try:
-        mode.load_state_dict(torch.load("runs/model.pth", weights_only=True), strict=False)
-    except:
-        pass
+    mode = TransformerModel(vocab_size=ntokens, embed_dim=256, num_heads=4, num_encoder_layers=4, max_len=max_len, dim_feedforward=128, dropout=0.1)
+    # try:
+    #     mode.load_state_dict(torch.load("runs/model.pth", weights_only=True), strict=False)
+    # except:
+    #     pass
     # print(mode)
     model = mode.to(device)
 
@@ -202,7 +202,8 @@ if __name__ == "__main__":
     data_loader = DataLoader(dataset, batch_size=256, num_workers=4, shuffle=True)
 
     # 定义优化器
-    initial_lr = 0.001
+    initial_lr = 0.0003
+    
     optimizer = torch.optim.AdamW(mode.parameters(), lr=initial_lr)
 
     # 定义损失函数

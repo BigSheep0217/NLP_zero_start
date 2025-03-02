@@ -187,10 +187,10 @@ if __name__ == "__main__":
     max_len = 32
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     mode = TransformerModel(vocab_size=ntokens, embed_dim=256, num_heads=4, num_encoder_layers=4, max_len=max_len, dim_feedforward=128, dropout=0.1)
-    # try:
-    #     mode.load_state_dict(torch.load("runs/model.pth", weights_only=True), strict=False)
-    # except:
-    #     pass
+    try:
+        mode.load_state_dict(torch.load("runs/model.pth", weights_only=True), strict=False)
+    except:
+        pass
     # print(mode)
     model = mode.to(device)
 
@@ -199,7 +199,7 @@ if __name__ == "__main__":
     dataset = TextDataset(corpus.train, seq_len=max_len)
 
     # 生成数据加载器，8线程
-    data_loader = DataLoader(dataset, batch_size=256, num_workers=4, shuffle=True)
+    data_loader = DataLoader(dataset, batch_size=128, num_workers=4, shuffle=True)
 
     # 定义优化器
     initial_lr = 0.0003
@@ -216,8 +216,8 @@ if __name__ == "__main__":
         # 训练模型
         max_iter = 1000000
         iteration = 0
-        show_iter = 100
-        gradient_accumulation_steps = 1
+        show_iter = 1000
+        gradient_accumulation_steps = 10
         for epoch in range(max_epoch):
             mode.train()
             total_loss = 0
